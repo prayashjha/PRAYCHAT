@@ -12,7 +12,8 @@ import {
   Camera, Image, MapPin, User as UserIcon, Users, Shield, Bell, Lock,
   Globe, Trash2, Edit3, Star, Reply, Forward, Copy, Pin, X, PhoneCall,
   PhoneMissed, PhoneIncoming, PhoneOutgoing, Clock, Heart, ThumbsUp,
-  Archive, VolumeX, UserPlus, ChevronRight, RefreshCw, AlertCircle
+  Archive, VolumeX, UserPlus, ChevronRight, RefreshCw, AlertCircle,
+  Download, Smartphone
 } from 'lucide-react';
 
 // ============ LANGUAGE ============
@@ -26,6 +27,95 @@ function useT() {
   const t = useCallback((key: string) => translations[lang]?.[key] || translations.en[key] || key, [lang]);
   const toggleLang = () => { const n = lang === 'en' ? 'hi' : 'en'; setLang(n); localStorage.setItem('pc-lang', n); };
   return { t, lang, toggleLang };
+}
+
+// ============ PWA INSTALL PROMPT ============
+function InstallPrompt() {
+  const { resolved } = useTheme();
+  const { t } = useT();
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [showPrompt, setShowPrompt] = useState(false);
+  const [isInstalled, setIsInstalled] = useState(false);
+
+  useEffect(() => {
+    // Check if already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setIsInstalled(true);
+      return;
+    }
+
+    // Listen for beforeinstallprompt event
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      // Show prompt after 3 seconds if not dismissed
+      const dismissed = localStorage.getItem('pc-install-dismissed');
+      if (!dismissed) {
+        setTimeout(() => setShowPrompt(true), 3000);
+      }
+    };
+
+    window.addEventListener('beforeinstallprompt', handler);
+
+    // Check if app was installed
+    window.addEventListener('appinstalled', () => {
+      setIsInstalled(true);
+      setShowPrompt(false);
+    });
+
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstall = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setShowPrompt(false);
+    }
+    setDeferredPrompt(null);
+  };
+
+  const handleDismiss = () => {
+    setShowPrompt(false);
+    localStorage.setItem('pc-install-dismissed', 'true');
+  };
+
+  if (isInstalled || !showPrompt || !deferredPrompt) return null;
+
+  return (
+    <div className="fixed bottom-20 left-4 right-4 z-50 animate-slide-up">
+      <div className={`rounded-2xl p-4 shadow-2xl ${
+        resolved === 'dark' ? 'bg-surface-800 border border-surface-700' : 'bg-white border border-surface-200'
+      }`}>
+        <div className="flex items-start gap-3">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-accent-600 flex items-center justify-center flex-shrink-0">
+            <Smartphone size={24} className="text-white" />
+          </div>
+          <div className="flex-1">
+            <h3 className={`font-semibold text-sm mb-1 ${resolved === 'dark' ? 'text-white' : 'text-surface-900'}`}>
+              Install PrayChat
+            </h3>
+            <p className={`text-xs ${resolved === 'dark' ? 'text-surface-400' : 'text-surface-500'}`}>
+              Install app on your phone for quick access
+            </p>
+          </div>
+          <button onClick={handleDismiss} className={`p-1 ${resolved === 'dark' ? 'text-surface-400' : 'text-surface-500'}`}>
+            <X size={18} />
+          </button>
+        </div>
+        <div className="flex gap-2 mt-3">
+          <button onClick={handleDismiss} className={`flex-1 btn-secondary text-xs py-2`}>
+            Later
+          </button>
+          <button onClick={handleInstall} className="flex-1 btn-primary text-xs py-2">
+            <Download size={14} />
+            Install
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 // ============ AVATAR COMPONENT ============
@@ -263,6 +353,9 @@ function MainApp() {
               );
             })}
           </nav>
+
+          {/* PWA Install Prompt */}
+          <InstallPrompt />
         </>
       )}
     </div>
