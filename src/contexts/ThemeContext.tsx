@@ -1,54 +1,31 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 type Theme = 'light' | 'dark' | 'system';
-
 interface ThemeContextType {
   theme: Theme;
-  setTheme: (theme: Theme) => void;
-  resolvedTheme: 'light' | 'dark';
+  setTheme: (t: Theme) => void;
+  resolved: 'light' | 'dark';
 }
-
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    const saved = localStorage.getItem('praychat-theme');
-    return (saved as Theme) || 'system';
-  });
-
-  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('dark');
+  const [theme, setTheme] = useState<Theme>(() => (localStorage.getItem('pc-theme') as Theme) || 'dark');
+  const [resolved, setResolved] = useState<'light' | 'dark'>('dark');
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
     const resolve = () => {
-      if (theme === 'system') {
-        setResolvedTheme(mediaQuery.matches ? 'dark' : 'light');
-      } else {
-        setResolvedTheme(theme);
-      }
+      const r = theme === 'system' ? (mq.matches ? 'dark' : 'light') : theme;
+      setResolved(r);
+      document.documentElement.classList.remove('light', 'dark');
+      document.documentElement.classList.add(r);
     };
-
     resolve();
-    mediaQuery.addEventListener('change', resolve);
-    return () => mediaQuery.removeEventListener('change', resolve);
+    mq.addEventListener('change', resolve);
+    localStorage.setItem('pc-theme', theme);
+    return () => mq.removeEventListener('change', resolve);
   }, [theme]);
 
-  useEffect(() => {
-    document.documentElement.classList.remove('light', 'dark');
-    document.documentElement.classList.add(resolvedTheme);
-    localStorage.setItem('praychat-theme', theme);
-  }, [resolvedTheme, theme]);
-
-  return (
-    <ThemeContext.Provider value={{ theme, setTheme, resolvedTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={{ theme, setTheme, resolved }}>{children}</ThemeContext.Provider>;
 }
-
-export function useTheme() {
-  const context = useContext(ThemeContext);
-  if (!context) throw new Error('useTheme must be used within ThemeProvider');
-  return context;
-}
+export const useTheme = () => { const c = useContext(ThemeContext); if (!c) throw new Error('no theme'); return c; };
