@@ -1,1 +1,277 @@
 @import "tailwindcss";
+
+@theme {
+  --color-primary-50: #eef2ff;
+  --color-primary-100: #e0e7ff;
+  --color-primary-200: #c7d2fe;
+  --color-primary-300: #a5b4fc;
+  --color-primary-400: #818cf8;
+  --color-primary-500: #6366f1;
+  --color-primary-600: #4f46e5;
+  --color-primary-700: #4338ca;
+  --color-primary-800: #3730a3;
+  --color-primary-900: #312e81;
+  --color-accent-50: #f5f3ff;
+  --color-accent-100: #ede9fe;
+  --color-accent-200: #ddd6fe;
+  --color-accent-300: #c4b5fd;
+  --color-accent-400: #a78bfa;
+  --color-accent-500: #8b5cf6;
+  --color-accent-600: #7c3aed;
+  --color-accent-700: #6d28d9;
+  --color-accent-800: #5b21b6;
+  --color-accent-900: #4c1d95;
+  --color-surface-50: #f8fafc;
+  --color-surface-100: #f1f5f9;
+  --color-surface-200: #e2e8f0;
+  --color-surface-300: #cbd5e1;
+  --color-surface-400: #94a3b8;
+  --color-surface-500: #64748b;
+  --color-surface-600: #475569;
+  --color-surface-700: #334155;
+  --color-surface-800: #1e293b;
+  --color-surface-900: #0f172a;
+  --color-surface-950: #020617;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .dark body {
+    background-color: var(--color-surface-900);
+    color: #e2e8f0;
+  }
+
+  .light body {
+    background-color: var(--color-surface-50);
+    color: #1e293b;
+  }
+}
+
+@layer components {
+  .card {
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.2s ease;
+  }
+
+  .dark .card {
+    background-color: var(--color-surface-800);
+    border: 1px solid var(--color-surface-700);
+  }
+
+  .light .card {
+    background-color: white;
+    border: 1px solid var(--color-surface-200);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 1rem;
+    border-radius: 8px;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .dark .sidebar-item {
+    color: var(--color-surface-300);
+  }
+
+  .dark .sidebar-item:hover {
+    background-color: var(--color-surface-700);
+    color: white;
+  }
+
+  .dark .sidebar-item.active {
+    background-color: var(--color-primary-600);
+    color: white;
+  }
+
+  .light .sidebar-item {
+    color: var(--color-surface-600);
+  }
+
+  .light .sidebar-item:hover {
+    background-color: var(--color-surface-100);
+    color: var(--color-surface-900);
+  }
+
+  .light .sidebar-item.active {
+    background-color: var(--color-primary-50);
+    color: var(--color-primary-700);
+  }
+
+  .stat-card {
+    border-radius: 12px;
+    padding: 1.25rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dark .stat-card {
+    background: linear-gradient(135deg, var(--color-surface-800), var(--color-surface-700));
+    border: 1px solid var(--color-surface-600);
+  }
+
+  .light .stat-card {
+    background: white;
+    border: 1px solid var(--color-surface-200);
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .badge-success {
+    background-color: #dcfce7;
+    color: #166534;
+  }
+
+  .badge-warning {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+
+  .badge-danger {
+    background-color: #fee2e2;
+    color: #991b1b;
+  }
+
+  .badge-info {
+    background-color: #dbeafe;
+    color: #1e40af;
+  }
+
+  .dark .badge-success {
+    background-color: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+  }
+
+  .dark .badge-warning {
+    background-color: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+  }
+
+  .dark .badge-danger {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+  }
+
+  .dark .badge-info {
+    background-color: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--color-primary-500), var(--color-accent-600));
+    color: white;
+  }
+
+  .btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--color-surface-300);
+    color: var(--color-surface-600);
+  }
+
+  .dark .btn-secondary {
+    border-color: var(--color-surface-600);
+    color: var(--color-surface-300);
+  }
+
+  .btn-secondary:hover {
+    background: var(--color-surface-100);
+  }
+
+  .dark .btn-secondary:hover {
+    background: var(--color-surface-700);
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: var(--color-surface-400);
+    border-radius: 3px;
+  }
+
+  .dark .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: var(--color-surface-600);
+  }
+
+  .table-row {
+    transition: background-color 0.1s ease;
+  }
+
+  .dark .table-row:hover {
+    background-color: var(--color-surface-700);
+  }
+
+  .light .table-row:hover {
+    background-color: var(--color-surface-50);
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, var(--color-primary-500), var(--color-accent-500));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glass-effect {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .dark .glass-effect {
+    background: rgba(15, 23, 42, 0.8);
+    border-bottom: 1px solid var(--color-surface-700);
+  }
+
+  .light .glass-effect {
+    background: rgba(255, 255, 255, 0.8);
+    border-bottom: 1px solid var(--color-surface-200);
+  }
+}
