@@ -1,0 +1,17 @@
+{
+  "name": "PrayChat - Connect with Faith",
+  "short_name": "PrayChat",
+  "description": "Secure messaging app - Connect with Faith",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b1120",
+  "theme_color": "#6366f1",
+  "lang": "en",
+  "categories": ["social", "communication"],
+  "icons": [
+    { "src": "/icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
